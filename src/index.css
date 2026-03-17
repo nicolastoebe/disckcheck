@@ -5,12 +5,13 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Montserrat", sans-serif;
   
-  --color-brand-black: #0A0A0A;
-  --color-brand-dark-green: #062C1F;
-  --color-brand-green: #10B981;
-  --color-brand-gray: #F8F9FA;
-  --color-brand-border: rgba(0, 0, 0, 0.06);
-  --color-brand-accent: #1DB954;
+  /* ── Tema Vermelho & Preto ── */
+  --color-brand-black:      #0A0A0A;
+  --color-brand-dark-green: #7F0000;   /* vermelho escuro — substitui dark-green */
+  --color-brand-green:      #E53E3E;   /* vermelho vivo — substitui green        */
+  --color-brand-gray:       #F8F9FA;
+  --color-brand-border:     rgba(0, 0, 0, 0.06);
+  --color-brand-accent:     #C53030;   /* vermelho médio — substitui accent      */
 }
 
 @layer base {
@@ -19,15 +20,12 @@
     -webkit-tap-highlight-color: transparent;
     user-select: none;
     overflow-x: hidden;
-    /* iOS momentum scroll */
     -webkit-overflow-scrolling: touch;
   }
 
   input, textarea, select {
     user-select: text;
-    /* Prevent iOS zoom on focus — font size must be >= 16px */
     font-size: 16px !important;
-    /* Remove iOS inner shadow on inputs */
     -webkit-appearance: none;
     appearance: none;
   }
@@ -38,63 +36,19 @@
   }
 }
 
-/* Safe area utilities */
-.safe-top {
-  padding-top: env(safe-area-inset-top);
-}
+.safe-top    { padding-top:    env(safe-area-inset-top); }
+.safe-bottom { padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem); }
+.safe-left   { padding-left:   env(safe-area-inset-left); }
+.safe-right  { padding-right:  env(safe-area-inset-right); }
 
-.safe-bottom {
-  padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem);
-}
-
-.safe-left  { padding-left:  env(safe-area-inset-left); }
-.safe-right { padding-right: env(safe-area-inset-right); }
-
-/* iOS scroll containers */
-.scroll-ios {
-  -webkit-overflow-scrolling: touch;
-  overflow-y: auto;
-}
+.scroll-ios { -webkit-overflow-scrolling: touch; overflow-y: auto; }
 
 .glass-card {
   @apply bg-white border border-brand-border shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-sm;
 }
 
 .btn-primary {
-  @apply bg-brand-dark-green text-white font-bold py-4 px-6 rounded-[1.25rem] transition-all hover:bg-brand-black active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-brand-dark-green/10;
-}
-
-.btn-secondary {
-  @apply bg-brand-accent text-white font-bold py-4 px-6 rounded-[1.25rem] transition-all hover:brightness-110 active:scale-[0.98] flex items-center justify-center gap-2 shadow-lg shadow-brand-accent/20;
-}
-
-.input-field {
-  @apply w-full bg-white border border-brand-border rounded-[1.25rem] px-5 py-4 focus:outline-none focus:ring-4 focus:ring-brand-green/10 focus:border-brand-green transition-all text-base placeholder:text-gray-300;
-}
-
-.status-badge {
-  @apply px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest;
-}
-
-.status-approved {
-  @apply bg-green-100 text-green-700;
-}
-
-.status-warning {
-  @apply bg-yellow-100 text-yellow-700;
-}
-
-.status-reproved {
-  @apply bg-red-100 text-red-700;
-}
-
-.glass-card {
-  @apply bg-white border border-brand-border shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-sm;
-}
-
-.btn-primary {
-  @apply bg-brand-dark-green text-white font-bold py-4 px-6 rounded-[1.25rem] transition-all hover:bg-brand-black active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-brand-dark-green/10;
-  /* iOS min tap target */
+  @apply bg-brand-dark-green text-white font-bold py-4 px-6 rounded-[1.25rem] transition-all hover:bg-brand-black active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-brand-dark-green/20;
   min-height: 48px;
 }
 
@@ -105,48 +59,35 @@
 
 .input-field {
   @apply w-full bg-white border border-brand-border rounded-[1.25rem] px-5 py-4 focus:outline-none focus:ring-4 focus:ring-brand-green/10 focus:border-brand-green transition-all placeholder:text-gray-300;
-  /* iOS: must be 16px+ to prevent zoom */
   font-size: 16px !important;
   line-height: 1.5;
   min-height: 56px;
 }
 
-.status-badge {
-  @apply px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest;
-}
-
+.status-badge { @apply px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest; }
 .status-approved { @apply bg-green-100 text-green-700; }
 .status-warning  { @apply bg-yellow-100 text-yellow-700; }
 .status-reproved { @apply bg-red-100 text-red-700; }
 
-/* Photo upload area — large tap target */
 .photo-upload-area {
   @apply relative aspect-video bg-brand-gray rounded-xl border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden;
   min-height: 80px;
 }
 
-/* Checklist item status button — iOS min tap target */
 .status-btn {
   @apply py-3.5 rounded-2xl text-[11px] font-black uppercase transition-all border-2;
   min-height: 48px;
 }
 
-/* Floating action button for new evaluation */
 .fab {
-  @apply fixed bottom-6 right-6 z-50 w-16 h-16 bg-brand-dark-green text-white rounded-full shadow-2xl shadow-brand-dark-green/40 flex items-center justify-center active:scale-95 transition-all;
+  @apply fixed right-6 z-50 w-16 h-16 bg-brand-dark-green text-white rounded-full shadow-2xl shadow-brand-dark-green/40 flex items-center justify-center active:scale-95 transition-all;
   bottom: calc(1.5rem + env(safe-area-inset-bottom));
 }
 
-/* Toast notification */
 @keyframes slideUp {
   from { transform: translateY(100px); opacity: 0; }
-  to   { transform: translateY(0);    opacity: 1; }
+  to   { transform: translateY(0);     opacity: 1; }
 }
-.toast {
-  animation: slideUp 0.3s ease-out;
-}
+.toast { animation: slideUp 0.3s ease-out; }
 
-/* Pull-to-refresh spinner color */
-:root {
-  color-scheme: light;
-}
+:root { color-scheme: light; }

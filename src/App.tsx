@@ -153,8 +153,26 @@ const LoginPage = ({ onLogin }: { onLogin: (u: User) => void }) => {
       <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }}
         className="w-full max-w-sm bg-white rounded-[3rem] p-10 shadow-2xl relative z-10">
         <div className="flex flex-col items-center mb-10">
-          <div className="w-20 h-20 bg-brand-dark-green rounded-3xl flex items-center justify-center mb-6 shadow-xl">
-            <Car className="text-brand-green w-12 h-12" />
+          <div className="w-24 h-24 bg-brand-dark-green rounded-3xl flex items-center justify-center mb-6 shadow-xl shadow-brand-dark-green/30">
+            <svg viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-16 h-16">
+              {/* Body */}
+              <rect x="4" y="18" width="56" height="14" rx="4" fill="#fff" fillOpacity="0.15"/>
+              <rect x="4" y="18" width="56" height="14" rx="4" stroke="#fff" strokeWidth="2"/>
+              {/* Roof */}
+              <path d="M16 18 C18 10, 24 7, 32 7 C40 7, 46 10, 48 18" stroke="#fff" strokeWidth="2" fill="#fff" fillOpacity="0.1"/>
+              {/* Windows */}
+              <path d="M19 18 C20 12, 24 9, 32 9 C38 9, 42 12, 44 18" fill="#fff" fillOpacity="0.25"/>
+              <line x1="32" y1="9" x2="32" y2="18" stroke="#fff" strokeWidth="1.5" strokeOpacity="0.5"/>
+              {/* Wheels */}
+              <circle cx="16" cy="32" r="6" fill="#7F0000" stroke="#fff" strokeWidth="2"/>
+              <circle cx="16" cy="32" r="2.5" fill="#fff" fillOpacity="0.8"/>
+              <circle cx="48" cy="32" r="6" fill="#7F0000" stroke="#fff" strokeWidth="2"/>
+              <circle cx="48" cy="32" r="2.5" fill="#fff" fillOpacity="0.8"/>
+              {/* Headlight */}
+              <rect x="56" y="21" width="4" height="3" rx="1.5" fill="#fff" fillOpacity="0.9"/>
+              {/* Taillight */}
+              <rect x="4" y="21" width="4" height="3" rx="1.5" fill="#E53E3E" fillOpacity="0.9"/>
+            </svg>
           </div>
           <h1 className="text-3xl font-bold font-display text-brand-black tracking-tight">DisckCheck</h1>
           <p className="text-gray-400 text-sm font-medium mt-1">Avaliação Automotiva Premium</p>
@@ -193,7 +211,7 @@ const LoginPage = ({ onLogin }: { onLogin: (u: User) => void }) => {
 };
 
 // ─── Dashboard ────────────────────────────────────────────────────────────────
-const Dashboard = ({ user, onNew, onLogout }: { user: User; onNew: () => void; onLogout: () => void }) => {
+const Dashboard = ({ user, onNew, onLogout, onUsers }: { user: User; onNew: () => void; onLogout: () => void; onUsers?: () => void }) => {
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
   const [loading, setLoading]         = useState(true);
   const [search, setSearch]           = useState('');
@@ -209,7 +227,7 @@ const Dashboard = ({ user, onNew, onLogout }: { user: User; onNew: () => void; o
   const fetchEvaluations = async (q = '') => {
     setLoading(true);
     try {
-      const data = await fetch(`/api/evaluations?q=${encodeURIComponent(q)}`).then(r => r.json());
+      const data = await fetch(`/api/evaluations?q=${encodeURIComponent(q)}&user_id=${user.id}&role=${user.role||'inspector'}`).then(r => r.json());
       setEvaluations(data);
     } catch { show('Erro ao carregar avaliações', 'error'); }
     finally   { setLoading(false); }
@@ -235,17 +253,17 @@ const Dashboard = ({ user, onNew, onLogout }: { user: User; onNew: () => void; o
         d.line(20, pH-25, pW-20, pH-25);
         d.text('Este laudo é uma avaliação técnica visual e estrutural não invasiva.', pW/2, pH-22, { align:'center', maxWidth:170 });
         d.text('A DisckCheck não se responsabiliza por vícios ocultos ou alterações posteriores.', pW/2, pH-18, { align:'center', maxWidth:170 });
-        d.setTextColor(6,44,31); d.setFont('helvetica','bold');
+        d.setTextColor(127,0,0); d.setFont('helvetica','bold');
         d.text('linktr.ee/nicolastoebe', pW/2, pH-12, { align:'center' });
         d.setTextColor(150,150,150); d.setFont('helvetica','normal');
         d.text(`Página ${pg} de ${tot} | DisckCheck`, pW/2, pH-6, { align:'center' });
       };
 
       // Cover
-      doc.setFillColor(6,44,31); doc.rect(0,0,pW,45,'F');
+      doc.setFillColor(127, 0, 0); doc.rect(0,0,pW,45,'F');
       doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(28);
       doc.text('DISCKCHECK',20,28);
-      doc.setFillColor(29,185,84); doc.rect(20,32,40,1.5,'F');
+      doc.setFillColor(229,62,62); doc.rect(20,32,40,1.5,'F');
       doc.setFont('helvetica','normal'); doc.setFontSize(10);
       doc.text(`CERTIFICADO DE AVALIAÇÃO TÉCNICA | MODALIDADE ${data.type.toUpperCase()}`,20,38);
       doc.setTextColor(40,40,40); doc.setFontSize(14); doc.setFont('helvetica','bold');
@@ -293,7 +311,7 @@ const Dashboard = ({ user, onNew, onLogout }: { user: User; onNew: () => void; o
       ].filter(p=>p.d);
       if (photos.length > 0) {
         doc.addPage();
-        doc.setTextColor(6,44,31); doc.setFont('helvetica','bold'); doc.setFontSize(14);
+        doc.setTextColor(127,0,0); doc.setFont('helvetica','bold'); doc.setFontSize(14);
         doc.text('REGISTRO FOTOGRÁFICO',20,25);
         let py=35, px=20;
         for (let i=0;i<photos.length;i++) {
@@ -310,14 +328,14 @@ const Dashboard = ({ user, onNew, onLogout }: { user: User; onNew: () => void; o
 
       // Checklist
       doc.addPage();
-      doc.setTextColor(6,44,31); doc.setFont('helvetica','bold'); doc.setFontSize(14);
+      doc.setTextColor(127,0,0); doc.setFont('helvetica','bold'); doc.setFontSize(14);
       doc.text('CHECKLIST DE INSPEÇÃO',20,25);
       autoTable(doc,{
         startY:32,
         head:[['CATEGORIA','ITEM DE INSPEÇÃO','STATUS']],
         body:(data.items||[]).map((i:any)=>[i.category.toUpperCase(),i.item_name,(i.status||'').toUpperCase()]),
         theme:'striped',
-        headStyles:{fillColor:[6,44,31],fontSize:9,fontStyle:'bold'},
+        headStyles:{fillColor:[127,0,0],fontSize:9,fontStyle:'bold'},
         styles:{fontSize:8,cellPadding:4},
         columnStyles:{2:{fontStyle:'bold',halign:'center'}},
         margin:{bottom:30},
@@ -334,7 +352,7 @@ const Dashboard = ({ user, onNew, onLogout }: { user: User; onNew: () => void; o
       const comp=(data.items||[]).filter((i:any)=>i.notes||(i.photos&&i.photos.length>0));
       if(comp.length>0){
         doc.addPage();
-        doc.setTextColor(6,44,31); doc.setFont('helvetica','bold'); doc.setFontSize(14);
+        doc.setTextColor(127,0,0); doc.setFont('helvetica','bold'); doc.setFontSize(14);
         doc.text('DETALHAMENTO DE RESSALVAS',20,25);
         let cy=35;
         for(const item of comp){
@@ -414,6 +432,11 @@ const Dashboard = ({ user, onNew, onLogout }: { user: User; onNew: () => void; o
         </div>
         <div className="flex gap-3">
           <button onClick={onNew} className="btn-primary hidden md:flex px-8"><Plus size={20}/> NOVA VISTORIA</button>
+          {onUsers && (
+            <button onClick={onUsers} className="p-4 bg-white border border-brand-border rounded-[1.25rem] text-brand-dark-green hover:bg-brand-dark-green/5 active:scale-95 transition-all shadow-sm" title="Gerenciar Usuários">
+              <UserIcon size={22}/>
+            </button>
+          )}
           <button onClick={onLogout} className="p-4 bg-white border border-brand-border rounded-[1.25rem] text-red-500 hover:bg-red-50 active:scale-95 transition-all shadow-sm">
             <LogOut size={22}/>
           </button>
@@ -910,15 +933,245 @@ const NewEvaluationWizard = ({ user, onCancel, onComplete }: { user: User; onCan
 };
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
+
+// ─── UserManagement ───────────────────────────────────────────────────────────
+const UserManagement = ({ onBack }: { onBack: () => void }) => {
+  const [users, setUsers]       = useState<any[]>([]);
+  const [loading, setLoading]   = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [editing, setEditing]   = useState<any | null>(null);
+  const [deleting, setDeleting] = useState<any | null>(null);
+  const { toasts, show } = useToast();
+
+  const empty = { name: '', email: '', password: '', role: 'inspector', active: 1 };
+  const [form, setForm] = useState(empty);
+
+  useEffect(() => { fetchUsers(); }, []);
+
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const r = await fetch('/api/users');
+      setUsers(await r.json());
+    } catch { show('Erro ao carregar usuários', 'error'); }
+    finally { setLoading(false); }
+  };
+
+  const openNew = () => { setEditing(null); setForm(empty); setShowForm(true); };
+  const openEdit = (u: any) => {
+    setEditing(u);
+    setForm({ name: u.name, email: u.email, password: '', role: u.role || 'inspector', active: u.active });
+    setShowForm(true);
+  };
+
+  const handleSave = async () => {
+    if (!form.name || !form.email) return show('Preencha nome e e-mail', 'error');
+    if (!editing && !form.password) return show('Defina uma senha', 'error');
+    try {
+      const method = editing ? 'PUT' : 'POST';
+      const url    = editing ? `/api/users/${editing.id}` : '/api/users';
+      const body   = editing && !form.password
+        ? { name: form.name, email: form.email, role: form.role, active: form.active }
+        : form;
+      const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      const data = await res.json();
+      if (!res.ok) return show(data.error || 'Erro ao salvar', 'error');
+      show(editing ? 'Usuário atualizado!' : 'Usuário criado!');
+      setShowForm(false);
+      fetchUsers();
+    } catch { show('Erro de conexão', 'error'); }
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      const res = await fetch(`/api/users/${id}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (!res.ok) return show(data.error || 'Erro ao excluir', 'error');
+      show('Usuário excluído');
+      setDeleting(null);
+      fetchUsers();
+    } catch { show('Erro de conexão', 'error'); }
+  };
+
+  return (
+    <div className="max-w-3xl mx-auto px-4 py-6 safe-top safe-bottom">
+      <ToastContainer toasts={toasts} />
+
+      {/* Header */}
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-3">
+          <button onClick={onBack} className="p-3 bg-white border border-brand-border rounded-2xl active:scale-95 transition-all">
+            <ArrowLeft size={20} className="text-gray-500" />
+          </button>
+          <div>
+            <h1 className="text-2xl font-black tracking-tight">Usuários</h1>
+            <p className="text-sm text-gray-400">Gerencie inspetores e administradores</p>
+          </div>
+        </div>
+        <button onClick={openNew} className="btn-primary px-5">
+          <Plus size={18} /> NOVO
+        </button>
+      </div>
+
+      {/* List */}
+      <div className="bg-white rounded-[2.5rem] border border-brand-border shadow-sm overflow-hidden">
+        {loading ? (
+          <div className="p-10 text-center text-gray-400 flex flex-col items-center gap-2">
+            <RefreshCw size={20} className="animate-spin text-brand-green" />
+            <span>Carregando...</span>
+          </div>
+        ) : users.map(u => (
+          <div key={u.id} className="flex items-center justify-between p-5 border-b border-brand-border last:border-0">
+            <div className="flex items-center gap-4">
+              <div className={cn(
+                'w-11 h-11 rounded-2xl flex items-center justify-center font-black text-lg',
+                u.role === 'admin' ? 'bg-brand-dark-green text-brand-green' : 'bg-brand-gray text-brand-black'
+              )}>
+                {u.name.charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <div className="font-bold flex items-center gap-2">
+                  {u.name}
+                  {u.role === 'admin' && (
+                    <span className="text-[10px] font-black bg-brand-dark-green text-brand-green px-2 py-0.5 rounded-full uppercase">Admin</span>
+                  )}
+                  {u.active === 0 && (
+                    <span className="text-[10px] font-black bg-gray-100 text-gray-400 px-2 py-0.5 rounded-full uppercase">Inativo</span>
+                  )}
+                </div>
+                <div className="text-sm text-gray-400">{u.email}</div>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button onClick={() => openEdit(u)}
+                className="p-2.5 text-brand-dark-green hover:bg-brand-dark-green/10 rounded-xl transition-colors active:scale-95">
+                <Eye size={16} />
+              </button>
+              {u.id !== 1 && (
+                <button onClick={() => setDeleting(u)}
+                  className="p-2.5 text-red-500 hover:bg-red-50 rounded-xl transition-colors active:scale-95">
+                  <Trash2 size={16} />
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Form modal */}
+      <AnimatePresence>
+        {showForm && (
+          <div className="fixed inset-0 z-[100] flex items-end md:items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, y: 60 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 60 }}
+              className="bg-white rounded-[2rem] p-7 w-full max-w-sm shadow-2xl"
+              style={{ marginBottom: 'env(safe-area-inset-bottom)' }}
+            >
+              <h3 className="text-xl font-black mb-6">{editing ? 'Editar Usuário' : 'Novo Usuário'}</h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-[10px] font-black text-gray-400 uppercase mb-1.5 tracking-widest">Nome</label>
+                  <input type="text" className="input-field" value={form.name}
+                    onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-black text-gray-400 uppercase mb-1.5 tracking-widest">E-mail</label>
+                  <input type="email" inputMode="email" className="input-field" value={form.email}
+                    onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-black text-gray-400 uppercase mb-1.5 tracking-widest">
+                    Senha {editing && <span className="normal-case font-normal">(deixe vazio para não alterar)</span>}
+                  </label>
+                  <input type="password" className="input-field" value={form.password}
+                    placeholder={editing ? "••••••••" : "Mínimo 6 caracteres"}
+                    onChange={e => setForm(f => ({ ...f, password: e.target.value }))} />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-black text-gray-400 uppercase mb-1.5 tracking-widest">Perfil</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {[{ id: 'inspector', l: 'Inspetor' }, { id: 'admin', l: 'Admin' }].map(r => (
+                      <button key={r.id} onClick={() => setForm(f => ({ ...f, role: r.id }))}
+                        className={cn('py-3 rounded-2xl font-bold text-sm border-2 transition-all active:scale-95',
+                          form.role === r.id ? 'bg-brand-dark-green text-white border-transparent' : 'bg-white text-gray-400 border-brand-border')}>
+                        {r.l}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                {editing && (
+                  <div>
+                    <label className="block text-[10px] font-black text-gray-400 uppercase mb-1.5 tracking-widest">Status</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {[{ v: 1, l: 'Ativo' }, { v: 0, l: 'Inativo' }].map(s => (
+                        <button key={s.v} onClick={() => setForm(f => ({ ...f, active: s.v }))}
+                          className={cn('py-3 rounded-2xl font-bold text-sm border-2 transition-all active:scale-95',
+                            form.active === s.v ? 'bg-brand-green text-white border-transparent' : 'bg-white text-gray-400 border-brand-border')}>
+                          {s.l}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="flex gap-3 mt-7">
+                <button onClick={() => setShowForm(false)}
+                  className="flex-1 py-4 bg-gray-100 text-gray-500 font-bold rounded-2xl active:scale-95">
+                  CANCELAR
+                </button>
+                <button onClick={handleSave}
+                  className="flex-1 py-4 bg-brand-dark-green text-white font-bold rounded-2xl active:scale-95 shadow-lg shadow-brand-dark-green/20">
+                  SALVAR
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Delete modal */}
+      <AnimatePresence>
+        {deleting && (
+          <div className="fixed inset-0 z-[100] flex items-end md:items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, y: 60 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 60 }}
+              className="bg-white rounded-[2rem] p-8 w-full max-w-sm shadow-2xl text-center"
+              style={{ marginBottom: 'env(safe-area-inset-bottom)' }}
+            >
+              <div className="w-14 h-14 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center mx-auto mb-5">
+                <Trash2 size={28} />
+              </div>
+              <h3 className="text-xl font-black mb-2">Excluir {deleting.name}?</h3>
+              <p className="text-gray-500 text-sm mb-7">Esta ação não pode ser desfeita.</p>
+              <div className="flex gap-3">
+                <button onClick={() => setDeleting(null)} className="flex-1 py-4 bg-gray-100 text-gray-500 font-bold rounded-2xl active:scale-95">CANCELAR</button>
+                <button onClick={() => handleDelete(deleting.id)} className="flex-1 py-4 bg-red-500 text-white font-bold rounded-2xl active:scale-95 shadow-lg shadow-red-500/20">EXCLUIR</button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+// ─── Main ─────────────────────────────────────────────────────────────────────
 export default function App() {
   const [user, setUser] = useState<User|null>(null);
-  const [view, setView] = useState<'dashboard'|'new'>('dashboard');
+  const [view, setView] = useState<'dashboard'|'new'|'users'>('dashboard');
   if (!user) return <LoginPage onLogin={setUser}/>;
   return (
     <div className="min-h-screen bg-brand-gray">
-      {view==='dashboard'
-        ? <Dashboard user={user} onNew={()=>setView('new')} onLogout={()=>setUser(null)}/>
-        : <NewEvaluationWizard user={user} onCancel={()=>setView('dashboard')} onComplete={()=>setView('dashboard')}/>}
+      {view==='dashboard' && (
+        <Dashboard
+          user={user}
+          onNew={()=>setView('new')}
+          onLogout={()=>setUser(null)}
+          onUsers={user.role==='admin' ? ()=>setView('users') : undefined}
+        />
+      )}
+      {view==='new' && <NewEvaluationWizard user={user} onCancel={()=>setView('dashboard')} onComplete={()=>setView('dashboard')}/>}
+      {view==='users' && <UserManagement onBack={()=>setView('dashboard')}/>}
     </div>
   );
 }

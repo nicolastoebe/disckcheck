@@ -7,7 +7,7 @@ export interface ChecklistItem {
   item_name: string;
   status: ItemStatus;
   notes?: string;
-  photos?: string[]; // base64 or URLs
+  photos?: string[];
 }
 
 export interface Evaluation {
@@ -37,7 +37,7 @@ export interface Evaluation {
   photo_seats_front?: string;
   photo_seats_rear?: string;
   photo_trunk?: string;
-  photos: string[]; // URLs
+  photos: string[];
   items?: ChecklistItem[];
   created_at?: string;
 }
@@ -47,4 +47,15 @@ export interface User {
   name: string;
   email: string;
   plan: string;
+  role: 'admin' | 'inspector';
+}
+
+export interface UserRecord {
+  id: number;
+  name: string;
+  email: string;
+  plan: string;
+  role: 'admin' | 'inspector';
+  active: number;
+  created_at: string;
 }
